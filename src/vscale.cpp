@@ -50,7 +50,7 @@ public:
 	}
 
 	HttpRequest &ClearHeaders() {
-		if (m_headers) {
+		if (m_headers != nullptr) {
 			curl_slist_free_all(m_headers);
 			m_headers = nullptr;
 		}
@@ -100,7 +100,7 @@ public:
 			code = curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, data.c_str());
 		}
 
-		if (m_headers && code == CURLE_OK)
+		if (m_headers != nullptr && code == CURLE_OK)
 			code = curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_headers);
 
 		if (code == CURLE_OK)
@@ -437,10 +437,9 @@ void DomainRecord::Delete(int domain_id, int record_id, JsonValue &response) con
 	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
-void DomainRecord::GetRecord(int domain_id, int record_id, JsonValue &response) const {
+void DomainRecord::Info(int domain_id, int record_id, JsonValue &response) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records/" + std::to_string(record_id)));
 	response = m_data->http.Perform();
-	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
 DomainsTags::DomainsTags(const string &token, const string &url): Vscale(token, url) {}
@@ -471,9 +470,38 @@ void DomainsTags::Delete(int id, JsonValue &response) const {
 }
 
 void DomainsTags::Info(int id, JsonValue &response) const {
+	response = m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id))).Perform();
+}
+
+PTRRecords::PTRRecords(const string &token, const string &url): Vscale(token, url) {}
+PTRRecords::~PTRRecords() {}
+
+void PTRRecords::List(JsonValue &response) const {
+	response = m_data->http.Perform();
+}
+
+void PTRRecords::Create(const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token));
+}
+
+void PTRRecords::Update(int id, const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
+	response = m_data->http.Perform(HttpRequest::mrPUT, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void PTRRecords::Delete(int id, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
 	response = m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)))
 			.Perform(HttpRequest::mrDELETE);
-	m_data->http.SetURL(m_data->url);
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void PTRRecords::Info(int id, JsonValue &response) const {
+	response = m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id))).Perform();
 }
 
 } // namespace vscale

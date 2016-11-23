@@ -13,6 +13,7 @@
 #define VSCALE_NOTIFICATIONS_API_URL "https://api.vscale.io/v1/billing/notify"
 #define VSCALE_DOMAIN_API_URL "https://api.vscale.io/v1/domains/"
 #define VSCALE_DOMAIN_TAGS_API_URL "https://api.vscale.io/v1/domains/tags/"
+#define VSCALE_PTR_RECORDS_API_URL "https://api.vscale.io/v1/domains/ptr/"
 
 namespace vscale {
 
@@ -153,13 +154,25 @@ public:
 	virtual void Create(int, const JsonValue &, JsonValue &) const;
 	virtual void Update(int, int, const JsonValue &, JsonValue &) const;
 	virtual void Delete(int, int, JsonValue &) const;
-	virtual void GetRecord(int, int, JsonValue &) const;
+	virtual void Info(int, int, JsonValue &) const;
 };
 
 class DomainsTags : public Vscale {
 public:
 	DomainsTags(const string &token, const string &url=VSCALE_DOMAIN_TAGS_API_URL);
 	virtual ~DomainsTags();
+
+	virtual void List(JsonValue &) const;
+	virtual void Create(const JsonValue &, JsonValue &) const;
+	virtual void Update(int, const JsonValue &, JsonValue &) const;
+	virtual void Delete(int, JsonValue &) const;
+	virtual void Info(int, JsonValue &) const;
+};
+
+class PTRRecords : public Vscale {
+public:
+	PTRRecords(const string &token, const string &url=VSCALE_PTR_RECORDS_API_URL);
+	virtual ~PTRRecords();
 
 	virtual void List(JsonValue &) const;
 	virtual void Create(const JsonValue &, JsonValue &) const;
