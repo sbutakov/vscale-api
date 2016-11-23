@@ -7,6 +7,7 @@
 
 #define DEFAULT_ACCOUNT_API_URL "https://api.vscale.io/v1/account"
 #define DEFAULT_SCALETS_API_URL "https://api.vscale.io/v1/scalets"
+#define DEFAULT_SERVER_TAGS_API_URL "https://api.vscale.io/v1/scalets/tags"
 
 namespace vscale {
 
@@ -58,6 +59,18 @@ public:
 	virtual void Upgrade(int id, const JsonValue &params, JsonValue &response) const;
 	virtual void Tasks(JsonValue &response) const;
 	virtual void Backup(int id, const JsonValue &params, JsonValue &response) const;
+};
+
+class ServerTags : public Vscale {
+public:
+	ServerTags(const string &token, const string &url=DEFAULT_SERVER_TAGS_API_URL);
+	virtual ~ServerTags();
+
+	virtual void List(JsonValue &response) const;
+	virtual void Create(const JsonValue &params, JsonValue &response) const;
+	virtual void Update(int id, const JsonValue &params, JsonValue &response) const;
+	virtual void Delete(int id, JsonValue &response) const;
+	virtual void Info(int, JsonValue &) const {}
 };
 
 } // namespace vscale

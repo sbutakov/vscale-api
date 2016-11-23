@@ -22,6 +22,7 @@ public:
 	enum MethodRequest {
 		mrGET,
 		mrPOST,
+		mrPUT,
 		mrPATCH,
 		mrDELETE
 	};
@@ -37,6 +38,10 @@ public:
 
 	HttpRequest &SetURL(const string &url) {
 		curl_easy_setopt(m_curl, CURLOPT_URL, url.c_str());
+		if (url.compare(0, 8 , "https://") == 0) {
+			curl_easy_setopt(m_curl, CURLOPT_SSL_VERIFYHOST, 0L);
+			curl_easy_setopt(m_curl, CURLOPT_SSL_VERIFYPEER, 0L);
+		}
 		return *this;
 	}
 
@@ -53,28 +58,37 @@ public:
 		return *this;
 	}
 
+// TODO: Callback HTTP headers for handling error
 	string Perform(MethodRequest method, const string &data="") {
 		curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, WriteFuncCallback);
 		curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, &m_response);
-		// TODO: SetTimeout
-		// TODO: Other settings
+		curl_easy_setopt(m_curl, CURLOPT_TIMEOUT, 30);
+		curl_easy_setopt(m_curl, CURLOPT_CONNECTTIMEOUT, 30);
+
 		CURLcode code;
 		switch (method) {
 			case mrGET: 
 				code = curl_easy_setopt(m_curl, CURLOPT_HTTPGET, 1L);
 				break;
 			case mrPOST:
+				code = curl_easy_setopt(m_curl, CURLOPT_POST, 1L);
+				break;
+			case mrPUT:
+				code = curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
+				break;
 			case mrPATCH:
-				method == mrPOST ? curl_easy_setopt(m_curl, CURLOPT_POST, 1L)
-								 : curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PATCH");
-				curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, (long) strlen(data.c_str()));
-				code = curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, data.c_str());
+				code = curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PATCH");
 				break;
 			case mrDELETE:
 				code = curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 				break;
 			default:
 				code = CURLE_FAILED_INIT;
+		}
+
+		if (code == CURLE_OK && !data.empty()) {
+			curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, (long) strlen(data.c_str()));
+			code = curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, data.c_str());
 		}
 
 		if (m_headers && code == CURLE_OK)
@@ -146,7 +160,7 @@ void Scalets::Create(const JsonValue &params, JsonValue &response) const {
 void Scalets::Update(int id, const JsonValue &params, JsonValue &response) const {
 	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
 	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
-	response = m_data->http.Perform(HttpRequest::mrPATCH, params.asString());
+	response = m_data->http.Perform(HttpRequest::mrPUT, params.asString());
 	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
@@ -209,6 +223,33 @@ void Scalets::Backup(int id, const JsonValue &params, JsonValue &response) const
 	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
 	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
 	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+ServerTags::ServerTags(const string &token, const string &url): Vscale(token, url) {}
+ServerTags::~ServerTags() {}
+
+void ServerTags::List(JsonValue &response) const {
+	response = m_data->http.Perform(HttpRequest::mrGET);
+}
+
+void ServerTags::Create(const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token));
+}
+
+void ServerTags::Update(int id, const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
+	response = m_data->http.Perform(HttpRequest::mrPUT, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void ServerTags::Delete(int id, JsonValue &response) const {
+	m_data->.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->.SetURL(AppendURLPath(m_data->url, std::to_string(id)))
+			.Perform(HttpRequest::mrDELETE);
+	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
 } // namespace vscale
