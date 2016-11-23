@@ -144,6 +144,22 @@ public:
 	virtual void Info(int, JsonValue &) const;
 };
 
+class Billing : public Vscale {
+public:
+	Billing(const string &token);
+	virtual ~Billing();
+
+	virtual void List(JsonValue &) const {}
+	virtual void Create(const JsonValue &, JsonValue &) const {}
+	virtual void Update(int, const JsonValue &, JsonValue &) const {}
+	virtual void Delete(int, JsonValue &) const {}
+	virtual void Info(int, JsonValue &) const {}
+
+	virtual void Balance(JsonValue &) const;
+	virtual void Payments(JsonValue &) const;
+	virtual void Consumption(const string &start_date, const string &end_date, JsonValue &response) const;
+
+};
 } // namespace vscale
 
 #endif // __VSCALE_H__

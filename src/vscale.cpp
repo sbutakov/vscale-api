@@ -8,6 +8,9 @@
 #define VSCALE_IMAGES_API_URL "https://api.vscale.io/v1/images"
 #define VSCALE_RPLANS_API_URL "https://api.vscale.io/v1/rplans"
 #define VSCALE_BILLING_PRICES_API_URL "https://api.vscale.io/v1/billing/prices"
+#define VSCALE_BILLING_BALANCE_API_URL "https://api.vscale.io/v1/billing/balance"
+#define VSCALE_BILLING_PAYMENTS_API_URL "https://api.vscale.io/v1/billing/payments"
+#define VSCALE_BILLING_CONSUMPTION_API_URL "https://api.vscale.io/v1/billing/consumption"
 
 namespace vscale {
 
@@ -342,6 +345,24 @@ void Notifications::Update(int, const JsonValue &params, JsonValue &response) co
 }
 
 void Notifications::Info(int, JsonValue &response) const {
+	response = m_data->http.Perform();
+}
+
+Billing::Billing(const string &token): Vscale(token, "") {}
+Billing::~Billing() {}
+
+void Billing::Balance(JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_BILLING_BALANCE_API_URL);
+	response = m_data->http.Perform();
+}
+
+void Billing::Payments(JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_BILLING_PAYMENTS_API_URL);
+	response = m_data->http.Perform();
+}
+
+void Billing::Consumption(const string &start_date, const string &end_date, JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_BILLING_CONSUMPTION_API_URL + "?start=" + start_date + "&end=" + end_date);
 	response = m_data->http.Perform();
 }
 
