@@ -316,4 +316,24 @@ void Configurations::BillingPrices(JsonValue &response) const {
 	response = m_data->http.Perform(HttpRequest::mrGET);
 }
 
+SSHKeys::SSHKeys(const string &token, const string &url): Vscale(token, url) {}
+SSHKeys::~SSHKeys() {}
+
+void SSHKeys::List(JsonValue &response) const {
+	response = m_data->http.Perform(HttpRequest::mrGET);
+}
+
+void SSHKeys::Create(const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token));
+}
+
+void SSHKeys::Delete(int id, JsonValue &response) const {
+	m_data->.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->.SetURL(AppendURLPath(m_data->url, std::to_string(id)))
+			.Perform(HttpRequest::mrDELETE);
+	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
 } // namespace vscale

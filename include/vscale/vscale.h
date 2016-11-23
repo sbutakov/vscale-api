@@ -9,6 +9,7 @@
 #define VSCALE_SCALETS_API_URL "https://api.vscale.io/v1/scalets"
 #define VSCALE_SERVER_TAGS_API_URL "https://api.vscale.io/v1/scalets/tags"
 #define VSCALE_BACKUP_API_URL "https://api.vscale.io/v1/backups"
+#define VSCALE_SSHKEYS_API_URL "https://api.vscale.io/v1/sshkeys"
 
 namespace vscale {
 
@@ -116,6 +117,18 @@ public:
 
 	virtual void RPlans(JsonValue &response) const;
 	virtual void BillingPrices(JsonValue &response) const;
+};
+
+class SSHKeys : public Vscale {
+public:
+	SSHKeys(const string &token, const string &url=VSCALE_SSHKEYS_API_URL);
+	virtual ~SSHKeys();
+
+	virtual void List(JsonValue &) const;
+	virtual void Create(const JsonValue &, JsonValue &) const;
+	virtual void Update(int, const JsonValue &, JsonValue &) const {}
+	virtual void Delete(int, JsonValue &) const;
+	virtual void Info(int, JsonValue &) const {}
 };
 
 } // namespace vscale
