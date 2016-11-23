@@ -63,8 +63,7 @@ public:
 		return *this;
 	}
 
-// TODO: Callback HTTP headers for handling error
-	string Perform(MethodRequest method, const string &data="") {
+	string Perform(MethodRequest method=mrGET, const string &data="") {
 		curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, WriteFuncCallback);
 		curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, &m_response);
 		curl_easy_setopt(m_curl, CURLOPT_TIMEOUT, 30);
@@ -146,14 +145,14 @@ Account::Account(const string &token, const string url): Vscale(token, url) {}
 Account::~Account() {}
 
 void Account::Info(int, JsonValue &response) const {
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 Scalets::Scalets(const string &token, const string &url): Vscale(token, url) {}
 Scalets::~Scalets() {}
 
 void Scalets::List(JsonValue &response) const {
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 void Scalets::Create(const JsonValue &params, JsonValue &response) const {
@@ -178,7 +177,7 @@ void Scalets::Delete(int id, JsonValue &response) const {
 
 void Scalets::Info(int id, JsonValue &response) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 	m_data->http.SetURL(m_data->url);
 }
 
@@ -218,8 +217,7 @@ void Scalets::Upgrade(int id, const JsonValue &params, JsonValue &response) cons
 }
 
 void Scalets::Tasks(JsonValue &response) const {
-	response = m_data->http.SetURL(AppendURLPath(TruncateURLPath(m_data->url), "/task"))
-			.Perform(HttpRequest::mrGET);
+	response = m_data->http.SetURL(AppendURLPath(TruncateURLPath(m_data->url), "/task")).Perform();
 	m_data->http.SetURL(m_data->url);
 }
 
@@ -234,7 +232,7 @@ ServerTags::ServerTags(const string &token, const string &url): Vscale(token, ur
 ServerTags::~ServerTags() {}
 
 void ServerTags::List(JsonValue &response) const {
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 void ServerTags::Create(const JsonValue &params, JsonValue &response) const {
@@ -261,7 +259,7 @@ Backup::Backup(const string &token, const string &url): Vscale(token, url) {}
 Backup::~Backup() {}
 
 void Backup::List(JsonValue &response) const {
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 void Backup::Delete(int id, JsonValue &response) const {
@@ -280,13 +278,13 @@ void Backup::Delete(const string &id, JsonValue &response) const {
 
 void Backup::Info(int id, JsonValue &response) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 	m_data->http.SetURL(m_data->url);
 }
 
 void Backup::Info(const string &id, JsonValue &response) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, id));
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 	m_data->http.SetURL(m_data->url);
 }
 
@@ -295,12 +293,12 @@ Background::~Background() {}
 
 void Background::Locations(JsonValue &response) const {
 	m_data->http.SetURL(VSCALE_LOCATIONS_API_URL);
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 void Background::Images(JsonValue &response) const {
 	m_data->http.SetURL(VSCALE_IMAGES_API_URL);
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 Configurations::Configurations(const string &token): Vscale(token, "") {}
@@ -308,19 +306,19 @@ Configurations::~Configurations() {}
 
 void Configurations::RPlans(JsonValue &response) const {
 	m_data->http.SetURL(VSCALE_RPLANS_API_URL);
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 void Configurations::BillingPrices(JsonValue &response) const {
 	m_data->http.SetURL(VSCALE_BILLING_PRICES_API_URL);
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 SSHKeys::SSHKeys(const string &token, const string &url): Vscale(token, url) {}
 SSHKeys::~SSHKeys() {}
 
 void SSHKeys::List(JsonValue &response) const {
-	response = m_data->http.Perform(HttpRequest::mrGET);
+	response = m_data->http.Perform();
 }
 
 void SSHKeys::Create(const JsonValue &params, JsonValue &response) const {
@@ -334,6 +332,17 @@ void SSHKeys::Delete(int id, JsonValue &response) const {
 	response = m_data->.SetURL(AppendURLPath(m_data->url, std::to_string(id)))
 			.Perform(HttpRequest::mrDELETE);
 	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+Notifications::Notifications(const string &token, const string &url): Vscale(token, url) {}
+Notifications::~Notifications();
+
+void Notifications::Update(int, const JsonValue &params, JsonValue &response) const {
+	response = m_data->http.Perform(HttpRequest::mrPUT, params.asString());
+}
+
+void Notifications::Info(int, JsonValue &response) const {
+	response = m_data->http.Perform();
 }
 
 } // namespace vscale
