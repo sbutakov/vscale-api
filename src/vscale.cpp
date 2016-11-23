@@ -146,6 +146,12 @@ Vscale::Vscale(const string &token, const string &url): m_data(new PrivateData) 
 
 Vscale::~Vscale() {}
 
+void Vscale::List(JsonValue &) const {}
+void Vscale::Create(const JsonValue &, JsonValue &) const {}
+void Vscale::Update(int, const JsonValue &, JsonValue &) const {}
+void Vscale::Delete(int, JsonValue &) const {}
+void Vscale::Info(int, JsonValue &) const {}
+
 Account::Account(const string &token, const string url): Vscale(token, url) {}
 Account::~Account() {}
 
@@ -399,6 +405,42 @@ void Domain::Info(int id, JsonValue &response) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
 	response = m_data->http.Perform();
 	m_data->http.SetURL(m_data->url);
+}
+
+DomainRecord::DomainRecord(const string &token, const string &url): Vscale(token, url) {}
+DomainRecord::~DomainRecord() {}
+
+void DomainRecord::List(int domain_id, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records"));
+	response = m_data->http.Perform();
+	m_data->http.SetURL(m_data->url);
+}
+
+void DomainRecord::Create(int domain_id, const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records"))
+			.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void DomainRecord::Update(int domain_id, int record_id, const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records/" + std::to_string(record_id)))
+			.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void DomainRecord::Delete(int domain_id, int record_id, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records/" + std::to_string(record_id)))
+			.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrDELETE);
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void DomainRecord::GetRecord(int domain_id, int record_id, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records/" + std::to_string(record_id)));
+	response = m_data->http.Perform();
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
 } // namespace vscale

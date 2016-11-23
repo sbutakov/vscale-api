@@ -23,11 +23,11 @@ public:
 	Vscale(const string &token, const string &url);
 	virtual ~Vscale();
 
-	virtual void List(JsonValue &) const = 0;
-	virtual void Create(const JsonValue &, JsonValue &) const = 0;
-	virtual void Update(int, const JsonValue &, JsonValue &) const = 0;
-	virtual void Delete(int, JsonValue &) const = 0;
-	virtual void Info(int, JsonValue &) const = 0;
+	virtual void List(JsonValue &) const;
+	virtual void Create(const JsonValue &, JsonValue &) const;
+	virtual void Update(int, const JsonValue &, JsonValue &) const;
+	virtual void Delete(int, JsonValue &) const;
+	virtual void Info(int, JsonValue &) const;
 
 protected:
 	struct PrivateData;
@@ -39,10 +39,6 @@ public:
 	Account(const string &token, const string url=VSCALE_ACCOUNT_API_URL);
 	virtual ~Account();
 
-	virtual void List(JsonValue &) const {}
-	virtual void Create(const JsonValue &, JsonValue &) const {}
-	virtual void Update(int, const JsonValue &, JsonValue &) const {}
-	virtual void Delete(int, JsonValue &) const {}
 	virtual void Info(int, JsonValue &response) const;
 };
 
@@ -55,7 +51,7 @@ public:
 	virtual void Create(const JsonValue &params, JsonValue &response) const;
 	virtual void Update(int id, const JsonValue &params, JsonValue &response) const;
 	virtual void Delete(int id, JsonValue &response) const;
-	virtual void Info(int id, JsonValue &response) const = 0;
+	virtual void Info(int id, JsonValue &response) const;
 	virtual void Restart(int id, const JsonValue &params, JsonValue &response) const;
 	virtual void Rebuild(int id, const JsonValue &params, JsonValue &response) const;
 	virtual void Stop(int id, const JsonValue &params, JsonValue &response) const;
@@ -74,7 +70,6 @@ public:
 	virtual void Create(const JsonValue &params, JsonValue &response) const;
 	virtual void Update(int id, const JsonValue &params, JsonValue &response) const;
 	virtual void Delete(int id, JsonValue &response) const;
-	virtual void Info(int, JsonValue &) const {}
 };
 
 class Backup : public Vscale {
@@ -83,8 +78,6 @@ public:
 	virtual ~Backup();
 
 	virtual void List(JsonValue &response) const;
-	virtual void Create(const JsonValue &params, JsonValue &response) const {}
-	virtual void Update(int id, const JsonValue &params, JsonValue &response) const {}
 	virtual void Delete(int id, JsonValue &response) const;
 	virtual void Delete(const string &id, JsonValue &response) const;
 	virtual void Info(int, JsonValue &) const;
@@ -96,12 +89,6 @@ public:
 	Background(const string &token);
 	virtual ~Background();
 
-	virtual void List(JsonValue &) const {}
-	virtual void Create(const JsonValue &, JsonValue &) const {}
-	virtual void Update(int, const JsonValue &, JsonValue &) const {}
-	virtual void Delete(int, JsonValue &) const {}
-	virtual void Info(int, JsonValue &) const {}
-
 	virtual void Locations(JsonValue &response) const;
 	virtual void Images(JsonValue &response) const;
 };
@@ -110,12 +97,6 @@ class Configurations : public Vscale {
 public:
 	Configurations(const string &token);
 	virtual ~Configurations();
-
-	virtual void List(JsonValue &) const {}
-	virtual void Create(const JsonValue &, JsonValue &) const {}
-	virtual void Update(int, const JsonValue &, JsonValue &) const {}
-	virtual void Delete(int, JsonValue &) const {}
-	virtual void Info(int, JsonValue &) const {}
 
 	virtual void RPlans(JsonValue &response) const;
 	virtual void BillingPrices(JsonValue &response) const;
@@ -128,9 +109,7 @@ public:
 
 	virtual void List(JsonValue &) const;
 	virtual void Create(const JsonValue &, JsonValue &) const;
-	virtual void Update(int, const JsonValue &, JsonValue &) const {}
 	virtual void Delete(int, JsonValue &) const;
-	virtual void Info(int, JsonValue &) const {}
 };
 
 class Notifications : public Vscale {
@@ -138,10 +117,7 @@ public:
 	Notifications(const string &token, const string &url=VSCALE_NOTIFICATIONS_API_URL);
 	virtual ~Notifications();
 
-	virtual void List(JsonValue &) const {}
-	virtual void Create(const JsonValue &, JsonValue &) const {}
 	virtual void Update(int, const JsonValue &, JsonValue &) const;
-	virtual void Delete(int, JsonValue &) const {}
 	virtual void Info(int, JsonValue &) const;
 };
 
@@ -149,12 +125,6 @@ class Billing : public Vscale {
 public:
 	Billing(const string &token);
 	virtual ~Billing();
-
-	virtual void List(JsonValue &) const {}
-	virtual void Create(const JsonValue &, JsonValue &) const {}
-	virtual void Update(int, const JsonValue &, JsonValue &) const {}
-	virtual void Delete(int, JsonValue &) const {}
-	virtual void Info(int, JsonValue &) const {}
 
 	virtual void Balance(JsonValue &) const;
 	virtual void Payments(JsonValue &) const;
@@ -171,6 +141,18 @@ public:
 	virtual void Update(int, const JsonValue &, JsonValue &) const;
 	virtual void Delete(int, JsonValue &) const;
 	virtual void Info(int, JsonValue &) const;
+};
+
+class DomainRecord : public Vscale {
+public:
+	DomainRecord(const string &token, const string &url=VSCALE_DOMAIN_API_URL);
+	virtual ~DomainRecord();
+
+	virtual void List(int, JsonValue &) const;
+	virtual void Create(int, const JsonValue &, JsonValue &) const;
+	virtual void Update(int, int, const JsonValue &, JsonValue &) const;
+	virtual void Delete(int, int, JsonValue &) const;
+	virtual void GetRecord(int, int, JsonValue &) const;
 };
 
 } // namespace vscale
