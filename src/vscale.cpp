@@ -252,4 +252,37 @@ void ServerTags::Delete(int id, JsonValue &response) const {
 	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
+Backup::Backup(const string &token, const string &url): Vscale(token, url) {}
+Backup::~Backup() {}
+
+void Backup::List(JsonValue &response) const {
+	response = m_data->http.Perform(HttpRequest::mrGET);
+}
+
+void Backup::Delete(int id, JsonValue &response) const {
+	m_data->.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->.SetURL(AppendURLPath(m_data->url, std::to_string(id)))
+			.Perform(HttpRequest::mrDELETE);
+	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void Backup::Delete(const string &id, JsonValue &response) const {
+	m_data->.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->.SetURL(AppendURLPath(m_data->url, id))
+			.Perform(HttpRequest::mrDELETE);
+	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void Backup::Info(int id, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
+	response = m_data->http.Perform(HttpRequest::mrGET);
+	m_data->http.SetURL(m_data->url);
+}
+
+void Backup::Info(const string &id, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, id));
+	response = m_data->http.Perform(HttpRequest::mrGET);
+	m_data->http.SetURL(m_data->url);
+}
+
 } // namespace vscale

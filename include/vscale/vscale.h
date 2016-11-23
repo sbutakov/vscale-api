@@ -5,9 +5,10 @@
 #include <memory>
 #include <string>
 
-#define DEFAULT_ACCOUNT_API_URL "https://api.vscale.io/v1/account"
-#define DEFAULT_SCALETS_API_URL "https://api.vscale.io/v1/scalets"
-#define DEFAULT_SERVER_TAGS_API_URL "https://api.vscale.io/v1/scalets/tags"
+#define VSCALE_ACCOUNT_API_URL "https://api.vscale.io/v1/account"
+#define VSCALE_SCALETS_API_URL "https://api.vscale.io/v1/scalets"
+#define VSCALE_SERVER_TAGS_API_URL "https://api.vscale.io/v1/scalets/tags"
+#define VSCALE_BACKUP_API_URL "https://api.vscale.io/v1/backups"
 
 namespace vscale {
 
@@ -32,7 +33,7 @@ protected:
 
 class Account : public Vscale {
 public:
-	Account(const string &token, const string url=DEFAULT_ACCOUNT_API_URL);
+	Account(const string &token, const string url=VSCALE_ACCOUNT_API_URL);
 	virtual ~Account();
 
 	virtual void List(JsonValue &) const {}
@@ -44,7 +45,7 @@ public:
 
 class Scalets : public Vscale {
 public:
-	Scalets(const string &token, const string &url=DEFAULT_SCALETS_API_URL);
+	Scalets(const string &token, const string &url=VSCALE_SCALETS_API_URL);
 	virtual ~Scalets();
 
 	virtual void List(JsonValue &response) const;
@@ -63,7 +64,7 @@ public:
 
 class ServerTags : public Vscale {
 public:
-	ServerTags(const string &token, const string &url=DEFAULT_SERVER_TAGS_API_URL);
+	ServerTags(const string &token, const string &url=VSCALE_SERVER_TAGS_API_URL);
 	virtual ~ServerTags();
 
 	virtual void List(JsonValue &response) const;
@@ -71,6 +72,20 @@ public:
 	virtual void Update(int id, const JsonValue &params, JsonValue &response) const;
 	virtual void Delete(int id, JsonValue &response) const;
 	virtual void Info(int, JsonValue &) const {}
+};
+
+class Backup : public Vscale {
+public:
+	Backup(const string &token, const string &url=VSCALE_BACKUP_API_URL);
+	virtual ~Backup();
+
+	virtual void List(JsonValue &response) const;
+	virtual void Create(const JsonValue &params, JsonValue &response) const {}
+	virtual void Update(int id, const JsonValue &params, JsonValue &response) const {}
+	virtual void Delete(int id, JsonValue &response) const;
+	virtual void Delete(const string &id, JsonValue &response) const;
+	virtual void Info(int, JsonValue &) const;
+	virtual void Info(const string &id, JsonValue &response) const;
 };
 
 } // namespace vscale
