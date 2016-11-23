@@ -11,6 +11,7 @@
 #define VSCALE_BACKUP_API_URL "https://api.vscale.io/v1/backups"
 #define VSCALE_SSHKEYS_API_URL "https://api.vscale.io/v1/sshkeys"
 #define VSCALE_NOTIFICATIONS_API_URL "https://api.vscale.io/v1/billing/notify"
+#define VSCALE_DOMAIN_API_URL "https://api.vscale.io/v1/domains/"
 
 namespace vscale {
 
@@ -158,8 +159,20 @@ public:
 	virtual void Balance(JsonValue &) const;
 	virtual void Payments(JsonValue &) const;
 	virtual void Consumption(const string &start_date, const string &end_date, JsonValue &response) const;
-
 };
+
+class Domain : public Vscale {
+public:
+	Domain(const string &token, const string &url=VSCALE_DOMAIN_API_URL);
+	virtual ~Domain();
+
+	virtual void List(JsonValue &) const;
+	virtual void Create(const JsonValue &, JsonValue &) const;
+	virtual void Update(int, const JsonValue &, JsonValue &) const;
+	virtual void Delete(int, JsonValue &) const;
+	virtual void Info(int, JsonValue &) const;
+};
+
 } // namespace vscale
 
 #endif // __VSCALE_H__

@@ -14,17 +14,6 @@
 
 namespace vscale {
 
-static size_t WriteFuncCallback(char *ptr, size_t size, size_t nmemb, void *userdata) {
-	size_t realsize = size * nmemb;
-	if (realsize <= 0)
-		return 0;
-	string *response = (string *) userdata;
-	response->reserve(realsize);
-	response->append(ptr);
-
-	return realsize;
-}
-
 class HttpRequest {
 public:
 	enum MethodRequest {
@@ -35,7 +24,9 @@ public:
 		mrDELETE
 	};
 
-	HttpRequest(): m_curl(curl_easy_init()), m_headers(nullptr) {}
+	HttpRequest(): m_headers(nullptr) {
+		m_curl = curl_easy_init();
+	}
 
 	~HttpRequest() {
 		ClearHeaders();
@@ -64,6 +55,17 @@ public:
 			m_headers = nullptr;
 		}
 		return *this;
+	}
+
+	static size_t WriteFuncCallback(char *ptr, size_t size, size_t nmemb, void *userdata) {
+		size_t realsize = size * nmemb;
+		if (realsize <= 0)
+			return 0;
+		string *response = (string *) userdata;
+		response->reserve(realsize);
+		response->append(ptr);
+
+		return realsize;
 	}
 
 	string Perform(MethodRequest method=mrGET, const string &data="") {
@@ -362,8 +364,41 @@ void Billing::Payments(JsonValue &response) const {
 }
 
 void Billing::Consumption(const string &start_date, const string &end_date, JsonValue &response) const {
-	m_data->http.SetURL(VSCALE_BILLING_CONSUMPTION_API_URL + "?start=" + start_date + "&end=" + end_date);
+	m_data->http.SetURL(VSCALE_BILLING_CONSUMPTION_API_URL "?start=" + start_date + "&end=" + end_date);
 	response = m_data->http.Perform();
+}
+
+Domain::Domain(const string &token, const string &url): Vscale(token, url) {}
+Domain::~Domain() {}
+
+void Domain::List(JsonValue &response) const {
+	response = m_data->http.Perform();
+}
+
+void Domain::Create(const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->http.Perform(HttpRequest::mrPOST, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token));
+}
+
+void Domain::Update(int id, const JsonValue &params, JsonValue &response) const {
+	m_data->http.SetHeader(HEADER_APPLICATION_JSON);
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
+	response = m_data->http.Perform(HttpRequest::mrPATCH, params.asString());
+	m_data->http.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void Domain::Delete(int id, JsonValue &response) const {
+	m_data->.SetHeader(HEADER_APPLICATION_JSON);
+	response = m_data->.SetURL(AppendURLPath(m_data->url, std::to_string(id)))
+			.Perform(HttpRequest::mrDELETE);
+	m_data->.ClearHeaders().SetHeader(TOKEN(m_data->token)).SetURL(m_data->url);
+}
+
+void Domain::Info(int id, JsonValue &response) const {
+	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(id)));
+	response = m_data->http.Perform();
+	m_data->http.SetURL(m_data->url);
 }
 
 } // namespace vscale
