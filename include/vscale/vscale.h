@@ -8,10 +8,10 @@
 #define DEFAULT_ACCOUNT_API_URL "https://api.vscale.io/v1/account"
 #define DEFAULT_SCALETS_API_URL "https://api.vscale.io/v1/scalets"
 
+namespace vscale {
+
 using std::string;
 typedef Json::Value JsonValue;
-
-namespace vscale {
 
 class Vscale {
 public:
