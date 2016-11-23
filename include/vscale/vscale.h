@@ -103,6 +103,21 @@ public:
 	virtual void Images(JsonValue &response) const;
 };
 
+class Configurations : public Vscale {
+public:
+	Configurations(const string &token);
+	virtual ~Configurations();
+
+	virtual void List(JsonValue &) const {}
+	virtual void Create(const JsonValue &, JsonValue &) const {}
+	virtual void Update(int, const JsonValue &, JsonValue &) const {}
+	virtual void Delete(int, JsonValue &) const {}
+	virtual void Info(int, JsonValue &) const {}
+
+	virtual void RPlans(JsonValue &response) const;
+	virtual void BillingPrices(JsonValue &response) const;
+};
+
 } // namespace vscale
 
 #endif // __VSCALE_H__

@@ -3,8 +3,11 @@
 
 #define TOKEN(A) "X-Token: " + A
 #define HEADER_APPLICATION_JSON "Content-Type: application/json;charset=UTF-8"
+
 #define VSCALE_LOCATIONS_API_URL "https://api.vscale.io/v1/locations"
 #define VSCALE_IMAGES_API_URL "https://api.vscale.io/v1/images"
+#define VSCALE_RPLANS_API_URL "https://api.vscale.io/v1/rplans"
+#define VSCALE_BILLING_PRICES_API_URL "https://api.vscale.io/v1/billing/prices"
 
 namespace vscale {
 
@@ -297,6 +300,19 @@ void Background::Locations(JsonValue &response) const {
 
 void Background::Images(JsonValue &response) const {
 	m_data->http.SetURL(VSCALE_IMAGES_API_URL);
+	response = m_data->http.Perform(HttpRequest::mrGET);
+}
+
+Configurations::Configurations(const string &token): Vscale(token, "") {}
+Configurations::~Configurations() {}
+
+void Configurations::RPlans(JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_RPLANS_API_URL);
+	response = m_data->http.Perform(HttpRequest::mrGET);
+}
+
+void Configurations::BillingPrices(JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_BILLING_PRICES_API_URL);
 	response = m_data->http.Perform(HttpRequest::mrGET);
 }
 
