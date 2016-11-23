@@ -3,6 +3,8 @@
 
 #define TOKEN(A) "X-Token: " + A
 #define HEADER_APPLICATION_JSON "Content-Type: application/json;charset=UTF-8"
+#define VSCALE_LOCATIONS_API_URL "https://api.vscale.io/v1/locations"
+#define VSCALE_IMAGES_API_URL "https://api.vscale.io/v1/images"
 
 namespace vscale {
 
@@ -283,6 +285,19 @@ void Backup::Info(const string &id, JsonValue &response) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, id));
 	response = m_data->http.Perform(HttpRequest::mrGET);
 	m_data->http.SetURL(m_data->url);
+}
+
+Background::Background(const string &token): Vscale(token, "") {}
+Background::~Background() {}
+
+void Background::Locations(JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_LOCATIONS_API_URL);
+	response = m_data->http.Perform(HttpRequest::mrGET);
+}
+
+void Background::Images(JsonValue &response) const {
+	m_data->http.SetURL(VSCALE_IMAGES_API_URL);
+	response = m_data->http.Perform(HttpRequest::mrGET);
 }
 
 } // namespace vscale

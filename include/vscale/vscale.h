@@ -88,6 +88,21 @@ public:
 	virtual void Info(const string &id, JsonValue &response) const;
 };
 
+class Background : public Vscale {
+public:
+	Background(const string &token);
+	virtual ~Background();
+
+	virtual void List(JsonValue &) const {}
+	virtual void Create(const JsonValue &, JsonValue &) const {}
+	virtual void Update(int, const JsonValue &, JsonValue &) const {}
+	virtual void Delete(int, JsonValue &) const {}
+	virtual void Info(int, JsonValue &) const {}
+
+	virtual void Locations(JsonValue &response) const;
+	virtual void Images(JsonValue &response) const;
+};
+
 } // namespace vscale
 
 #endif // __VSCALE_H__
