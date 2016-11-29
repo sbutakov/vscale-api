@@ -18,8 +18,8 @@ int main() {
   Json::Value response;
   try {
     vscale::Scalets("token").List(response);
-    std::cout << response.toStyledStrin() << std::endl;
-  } catch (BadRequest &e) {
+    std::cout << response.toStyledString() << std::endl;
+  } catch (vscale::BadRequest &e) {
     std::cout << e.what() << std::endl;
   }
   return 0;
@@ -27,5 +27,5 @@ int main() {
 ```
 
 ```bash
-$ g++ -std=c++11 -Wall main.cpp -lvscale -lcppjson -o vscale-test
+$ g++ -std=c++11 -Wall main.cpp -lvscale -ljsoncpp -o vscale-test
 ```
