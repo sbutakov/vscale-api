@@ -503,9 +503,8 @@ public:
 	* @brief Удалить ресурсную запись домена
 	* @params [in] domain_id Идентификатор домена
 	* @params [in] record_id Идентификатор ресурсной записи
-	* @param [out] response Созданная ресурсная запись
 	*/
-	virtual void Delete(int domain_id, int record_id, JsonValue &) const;
+	virtual void Delete(int domain_id, int record_id) const;
 
 	/*
 	* @brief Получить ресурсную запись

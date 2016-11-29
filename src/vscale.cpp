@@ -418,10 +418,9 @@ void DomainRecord::Update(int domain_id, int record_id, const JsonValue &params,
 	m_data->http.ClearHeaders().SetHeader(HEADER_TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
-void DomainRecord::Delete(int domain_id, int record_id, JsonValue &response) const {
+void DomainRecord::Delete(int domain_id, int record_id) const {
 	m_data->http.SetURL(AppendURLPath(m_data->url, std::to_string(domain_id) + "/records/" + std::to_string(record_id)))
-			.SetHeader(HEADER_APPLICATION_JSON);
-	response = m_data->http.Perform(HttpRequest::mrDELETE);
+			.SetHeader(HEADER_APPLICATION_JSON).Perform(HttpRequest::mrDELETE);
 	m_data->http.ClearHeaders().SetHeader(HEADER_TOKEN(m_data->token)).SetURL(m_data->url);
 }
 
