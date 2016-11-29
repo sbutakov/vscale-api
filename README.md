@@ -1,5 +1,5 @@
 # Vscale API
-vscale-api is a C++ client library for accessing the [Vscale API](https://developers.vscale.io).
+Vscale API is a C++ client library for accessing the [Vscale API](https://developers.vscale.io).
 
 ## Build
 
