@@ -4,16 +4,27 @@
 #include <json/json.h>
 #include <memory>
 #include <string>
+#include <exception>
 
 namespace vscale {
 
 using std::string;
 typedef Json::Value JsonValue;
 
+class BadRequest : public std::exception {
+public:
+	BadRequest(const string &what);
+	virtual const char* what() const throw();
+
+private:
+	string m_what;
+};
+
 /*
 * @brief Базовый класс хранящий данные для выполнения запросов к Vscale
 * @detail Нельзя создавать объекты данного класса. Используется только
-* в наследовании для доступа потомкам к данным для выполнения запросов
+* в наследовании для доступа потомкам к данным для выполнения запросов.
+* В случае завершение запроса с ошибкой, будет сгенерировано исключение типа BadRequest
 */
 class VscalePrivateData {
 protected:
