@@ -15,8 +15,8 @@ $ make install
 #include <iostream>
 
 int main() {
-  Json::Value response;
   try {
+    Json::Value response;
     vscale::Scalets("token").List(response);
     std::cout << response.toStyledString() << std::endl;
   } catch (vscale::BadRequest &e) {
