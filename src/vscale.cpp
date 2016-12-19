@@ -1,25 +1,25 @@
 #include <vscale/vscale.h>
 #include <curl/curl.h>
 
-#define SUCCESS_RESPONSE_CODE_200 			200
-#define SUCCESS_RESPONSE_CODE_204 			204
-#define VSCALE_ERROR_MESSAGE				"VSCALE-ERROR-MESSAGE"
-#define DEFAULT_BAD_REQUEST					"bad request with code"
-#define HEADER_TOKEN(A) 					"X-Token: " + A
-#define HEADER_APPLICATION_JSON 			"Content-Type: application/json;charset=UTF-8"
+#define SUCCESS_RESPONSE_CODE_200 		200
+#define SUCCESS_RESPONSE_CODE_204 		204
+#define VSCALE_ERROR_MESSAGE			"VSCALE-ERROR-MESSAGE"
+#define DEFAULT_BAD_REQUEST			"bad request with code "
+#define HEADER_TOKEN(A) 			"X-Token: " + A
+#define HEADER_APPLICATION_JSON 		"Content-Type: application/json;charset=UTF-8"
 
-#define VSCALE_ACCOUNT_API_URL 				"https://api.vscale.io/v1/account"
-#define VSCALE_SCALETS_API_URL 				"https://api.vscale.io/v1/scalets"
-#define VSCALE_SERVER_TAGS_API_URL 			"https://api.vscale.io/v1/scalets/tags"
-#define VSCALE_BACKUP_API_URL 				"https://api.vscale.io/v1/backups"
-#define VSCALE_SSHKEYS_API_URL 				"https://api.vscale.io/v1/sshkeys"
+#define VSCALE_ACCOUNT_API_URL 			"https://api.vscale.io/v1/account"
+#define VSCALE_SCALETS_API_URL 			"https://api.vscale.io/v1/scalets"
+#define VSCALE_SERVER_TAGS_API_URL 		"https://api.vscale.io/v1/scalets/tags"
+#define VSCALE_BACKUP_API_URL 			"https://api.vscale.io/v1/backups"
+#define VSCALE_SSHKEYS_API_URL 			"https://api.vscale.io/v1/sshkeys"
 #define VSCALE_NOTIFICATIONS_API_URL 		"https://api.vscale.io/v1/billing/notify"
-#define VSCALE_DOMAIN_API_URL 				"https://api.vscale.io/v1/domains/"
-#define VSCALE_DOMAIN_TAGS_API_URL 			"https://api.vscale.io/v1/domains/tags/"
-#define VSCALE_PTR_RECORDS_API_URL 			"https://api.vscale.io/v1/domains/ptr/"
-#define VSCALE_LOCATIONS_API_URL 			"https://api.vscale.io/v1/locations"
-#define VSCALE_IMAGES_API_URL 				"https://api.vscale.io/v1/images"
-#define VSCALE_RPLANS_API_URL 				"https://api.vscale.io/v1/rplans"
+#define VSCALE_DOMAIN_API_URL 			"https://api.vscale.io/v1/domains/"
+#define VSCALE_DOMAIN_TAGS_API_URL 		"https://api.vscale.io/v1/domains/tags/"
+#define VSCALE_PTR_RECORDS_API_URL 		"https://api.vscale.io/v1/domains/ptr/"
+#define VSCALE_LOCATIONS_API_URL 		"https://api.vscale.io/v1/locations"
+#define VSCALE_IMAGES_API_URL 			"https://api.vscale.io/v1/images"
+#define VSCALE_RPLANS_API_URL 			"https://api.vscale.io/v1/rplans"
 #define VSCALE_BILLING_PRICES_API_URL 		"https://api.vscale.io/v1/billing/prices"
 #define VSCALE_BILLING_BALANCE_API_URL 		"https://api.vscale.io/v1/billing/balance"
 #define VSCALE_BILLING_PAYMENTS_API_URL 	"https://api.vscale.io/v1/billing/payments"
