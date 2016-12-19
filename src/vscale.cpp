@@ -200,6 +200,7 @@ VscalePrivateData::VscalePrivateData(const string &url, const string &token)
 }
 
 Account::Account(const string &token): VscalePrivateData(VSCALE_ACCOUNT_API_URL, token) {}
+Account::~Account() {}
 
 void Account::Info(JsonValue &response) const {
 	response = m_data->http.Perform();

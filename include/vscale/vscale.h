@@ -50,6 +50,9 @@ public:
 	*/
 	Account(const string &token);
 
+	/// Виртуальный деструктор
+	virtual ~Account();
+
 	/*
 	* @brief Получить информацию о пользователе
 	* @param [out] response Информация о пользователе в объекте json
